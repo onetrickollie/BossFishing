@@ -11,8 +11,10 @@ public class EnterDoor : MonoBehaviour
     // Start is called before the first frame update
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Player")
+         Debug.Log("OnTriggerEnter2D activated");
+        if (collision.CompareTag("Player"))
         {
+            Debug.Log("Enter Door");
             SceneManager.LoadScene(sceneName);
             collision.transform.position = indoorPosition;
         }
