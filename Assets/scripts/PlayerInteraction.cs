@@ -1,23 +1,39 @@
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    public Tilemap interactableTilemap; // Assign your interactable Tilemap in the Inspector
+    private bool canFish = false;
+
+    private void Update()
+    {
+        if (canFish && Input.GetKeyDown(KeyCode.F)) // Press 'F' to fish
+        {
+            Fish();
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player")) // Assuming player is tagged as "Player"
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Water"))
         {
-            Vector3Int tilePosition = interactableTilemap.WorldToCell(transform.position);
-            TileBase tile = interactableTilemap.GetTile(tilePosition);
-
-            if (tile != null)
-            {
-                // Check for tile-specific interactions based on tile type or name
-                Debug.Log("Interacted with tile: " + tile.name);
-                // Add interaction-specific code here based on tile type, name, or properties
-            }
+            canFish = true;
+            Debug.Log("You can fish here!");
         }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Water"))
+        {
+            canFish = false;
+            Debug.Log("You can't fish here anymore.");
+        }
+    }
+
+    private void Fish()
+    {
+        // Add a fish to the GameManager's backpack
+        GameManager.Instance.AddToBackpack("Fish");
+        Debug.Log("Caught a fish!");
     }
 }
