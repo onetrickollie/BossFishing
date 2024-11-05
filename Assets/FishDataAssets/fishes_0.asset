@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09430f65b0fac4672bf429392f23473c, type: 3}
   m_Name: fishes_0
   m_EditorClassIdentifier: 
-  itemName: fishes_0
+  itemName: shekinah
   itemIcon: {fileID: -2045457946, guid: 8d2df836b21e74081aa06eb0ab45f874, type: 3}
