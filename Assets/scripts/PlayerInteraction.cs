@@ -6,7 +6,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
-        if (canFish && Input.GetKeyDown(KeyCode.F)) // Press 'F' to fish
+        if (canFish && Input.GetMouseButtonDown(0)) // 0 is the left mouse button
         {
             Fish();
         }
