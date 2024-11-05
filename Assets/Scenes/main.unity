@@ -2225,6 +2225,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81122a14313f14a888dbc9c472ccff74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fishTypes:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!61 &845524187
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2896,8 +2900,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab3365e5d9778409fabd45234a029d85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backpackText: {fileID: 930697785}
   backpackPanel: {fileID: 366249512}
+  backpackItemPrefab: {fileID: 0}
+  backpackContentParent: {fileID: 0}
 --- !u!4 &1421521492
 Transform:
   m_ObjectHideFlags: 0

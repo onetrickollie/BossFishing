@@ -1,36 +1,65 @@
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class BackpackUI : MonoBehaviour
 {
-    public TextMeshProUGUI backpackText; // Reference to TextMeshProUGUI component
-    public GameObject backpackPanel; // Panel that contains the UI
+    public GameObject backpackPanel; // Main panel for the backpack UI
+    public Transform backpackContentParent; // Parent for the item entries
+    public GameObject backpackItemTemplate; // Template prefab for each item
 
     private void Start()
     {
-        backpackPanel.SetActive(false); // Ensure the backpack UI is hidden initially
+        backpackPanel.SetActive(false); // Hide backpack initially
     }
 
     private void Update()
     {
-        // Toggle the backpack UI visibility with E key
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E)) // Toggle backpack with 'E'
         {
             backpackPanel.SetActive(!backpackPanel.activeSelf);
-            UpdateBackpackUI();
+            if (backpackPanel.activeSelf)
+            {
+                UpdateBackpackUI();
+            }
+            else
+            {
+                ClearBackpackUI();
+            }
         }
     }
 
-    // Update the UI to display backpack contents
     private void UpdateBackpackUI()
     {
-        if (GameManager.Instance != null)
+        ClearBackpackUI();
+
+        // Loop through each item in the backpack
+        foreach (ItemData item in GameManager.Instance.backpackItems)
         {
-            backpackText.text = "Backpack:\n";
-            foreach (string item in GameManager.Instance.backpackItems)
+            if (item is FishData fishData)
             {
-                backpackText.text += item + "\n";
+                // Instantiate a new item UI from the template
+                GameObject itemUI = Instantiate(backpackItemTemplate, backpackContentParent);
+
+                // Set the name and icon of the caught fish
+                TextMeshProUGUI itemNameText = itemUI.GetComponentInChildren<TextMeshProUGUI>();
+                Image itemIconImage = itemUI.GetComponentInChildren<Image>();
+
+                itemNameText.text = fishData.itemName; // Set the fish name from FishData
+                itemIconImage.sprite = fishData.itemIcon; // Set the fish icon from FishData
+
+                // Ensure the item UI is active (in case the prefab is initially disabled)
+                itemUI.SetActive(true);
             }
+        }
+    }
+
+    private void ClearBackpackUI()
+    {
+        foreach (Transform child in backpackContentParent)
+        {
+            Destroy(child.gameObject);
         }
     }
 }
