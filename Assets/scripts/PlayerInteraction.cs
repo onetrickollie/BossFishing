@@ -1,9 +1,12 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
     private bool canFish = false;
 
+    private List<string> fishList = new List<string>() {"Bass", "Trout", "Salmon","Broken CD","Ancient Doll(chuckie)"};
     private void Update()
     {
         // Check for left mouse click to fish
@@ -35,8 +38,10 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Fish()
     {
+        int randomIndex = UnityEngine.Random.Range(0, fishList.Count);
+        string caughtFish = fishList[randomIndex];
         // Simulate catching a fish (for now, just a debug message)
-        Debug.Log("Caught a fish!");
-        GameManager.Instance.AddToBackpack("Fish"); // Add fish to backpack
+        Debug.Log("Caught a fish! It is a " + caughtFish);
+        GameManager.Instance.AddToBackpack(caughtFish); // Add fish to backpack
     }
 }

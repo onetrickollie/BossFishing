@@ -16,7 +16,6 @@ public class BackpackUI : MonoBehaviour
         // Toggle the backpack UI visibility with E key
         if (Input.GetKeyDown(KeyCode.E))
         {
-            Debug.Log("E key pressed");
             backpackPanel.SetActive(!backpackPanel.activeSelf);
             UpdateBackpackUI();
         }
