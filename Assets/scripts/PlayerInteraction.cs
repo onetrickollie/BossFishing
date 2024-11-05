@@ -6,6 +6,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
+        // Check for left mouse click to fish
         if (canFish && Input.GetMouseButtonDown(0)) // 0 is the left mouse button
         {
             Fish();
@@ -14,6 +15,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // Check if player enters a water area by layer
         if (collision.gameObject.layer == LayerMask.NameToLayer("Water"))
         {
             canFish = true;
@@ -23,6 +25,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        // Disable fishing when player leaves the water area
         if (collision.gameObject.layer == LayerMask.NameToLayer("Water"))
         {
             canFish = false;
@@ -32,8 +35,8 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Fish()
     {
-        // Add a fish to the GameManager's backpack
-        GameManager.Instance.AddToBackpack("Fish");
+        // Simulate catching a fish (for now, just a debug message)
         Debug.Log("Caught a fish!");
+        GameManager.Instance.AddToBackpack("Fish"); // Add fish to backpack
     }
 }
