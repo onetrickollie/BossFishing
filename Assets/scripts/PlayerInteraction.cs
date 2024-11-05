@@ -1,12 +1,19 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class PlayerInteraction : MonoBehaviour
 {
     private bool canFish = false;
+    private List<string> fishTypes = new List<string> { "Bass", "Anchovy", "Broken CD" };
 
-    private List<string> fishList = new List<string>() {"Bass", "Trout", "Salmon","Broken CD","Ancient Doll(chuckie)"};
+    private CatchMessageUI catchMessageUI;
+
+    private void Start()
+    {
+        // Find the CatchMessageUI component in the scene
+        catchMessageUI = FindObjectOfType<CatchMessageUI>();
+    }
+
     private void Update()
     {
         // Check for left mouse click to fish
@@ -38,10 +45,17 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Fish()
     {
-        int randomIndex = UnityEngine.Random.Range(0, fishList.Count);
-        string caughtFish = fishList[randomIndex];
-        // Simulate catching a fish (for now, just a debug message)
-        Debug.Log("Caught a fish! It is a " + caughtFish);
-        GameManager.Instance.AddToBackpack(caughtFish); // Add fish to backpack
+        // Randomly select a fish from the list
+        int randomIndex = Random.Range(0, fishTypes.Count);
+        string caughtFish = fishTypes[randomIndex];
+
+        // Add the caught fish to the backpack
+        GameManager.Instance.AddToBackpack(caughtFish);
+
+        // Display the catch message
+        if (catchMessageUI != null)
+        {
+            catchMessageUI.DisplayCatchMessage(caughtFish);
+        }
     }
 }
