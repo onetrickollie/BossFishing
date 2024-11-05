@@ -4,9 +4,9 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    
+
     public Vector3 playerPosition; // To save the player's position
-    public List<string> backpackItems = new List<string>(); // Backpack inventory
+    public List<ItemData> backpackItems = new List<ItemData>(); // Backpack inventory
 
     private void Awake()
     {
@@ -27,8 +27,8 @@ public class GameManager : MonoBehaviour
         playerPosition = position;
     }
 
-    // Method to add item to backpack
-    public void AddToBackpack(string item)
+    // Method to add item to backpack (generalized for any item type)
+    public void AddToBackpack(ItemData item)
     {
         backpackItems.Add(item);
     }

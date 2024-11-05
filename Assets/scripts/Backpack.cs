@@ -1,36 +1,55 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class BackpackUI : MonoBehaviour
 {
-    public TextMeshProUGUI backpackText; // Reference to TextMeshProUGUI component
-    public GameObject backpackPanel; // Panel that contains the UI
+    public GameObject backpackPanel;
+    public GameObject backpackItemPrefab;
+    public Transform backpackContentParent;
 
     private void Start()
     {
-        backpackPanel.SetActive(false); // Ensure the backpack UI is hidden initially
+        backpackPanel.SetActive(false);
     }
 
     private void Update()
     {
-        // Toggle the backpack UI visibility with E key
         if (Input.GetKeyDown(KeyCode.E))
         {
             backpackPanel.SetActive(!backpackPanel.activeSelf);
-            UpdateBackpackUI();
+            if (backpackPanel.activeSelf)
+            {
+                UpdateBackpackUI();
+            }
+            else
+            {
+                ClearBackpackUI();
+            }
         }
     }
 
-    // Update the UI to display backpack contents
     private void UpdateBackpackUI()
     {
-        if (GameManager.Instance != null)
+        ClearBackpackUI();
+
+        foreach (ItemData item in GameManager.Instance.backpackItems)
         {
-            backpackText.text = "Backpack:\n";
-            foreach (string item in GameManager.Instance.backpackItems)
-            {
-                backpackText.text += item + "\n";
-            }
+            GameObject itemUI = Instantiate(backpackItemPrefab, backpackContentParent);
+
+            TextMeshProUGUI itemNameText = itemUI.GetComponentInChildren<TextMeshProUGUI>();
+            Image itemIconImage = itemUI.GetComponentInChildren<Image>();
+
+            itemNameText.text = item.itemName;
+            itemIconImage.sprite = item.itemIcon;
+        }
+    }
+
+    private void ClearBackpackUI()
+    {
+        foreach (Transform child in backpackContentParent)
+        {
+            Destroy(child.gameObject);
         }
     }
 }
