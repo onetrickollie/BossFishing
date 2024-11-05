@@ -1,22 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnterDoor : MonoBehaviour
 {
-    public string sceneName;
-    public Vector3 indoorPosition;
+    public string sceneName; // Name of the scene to load
+    public Vector3 returnPosition; // Position to place player on return
 
-    // Start is called before the first frame update
     private void OnTriggerEnter2D(Collider2D collision)
     {
-         Debug.Log("OnTriggerEnter2D activated");
         if (collision.CompareTag("Player"))
         {
-            Debug.Log("Enter Door");
+            // Save the player's position in the GameManager
+            GameManager.Instance.SavePlayerPosition(returnPosition);
+
+            // Load the specified scene
             SceneManager.LoadScene(sceneName);
-            collision.transform.position = indoorPosition;
         }
     }
 }
