@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     private Dictionary<string, Vector3> sceneSpawnPoints = new Dictionary<string, Vector3>(); // Store spawn points for each scene
     public string currentScene; // Track the current scene
     public List<Item> inventory = new List<Item>(); // Persistent inventory list
+    public int playerGold = 0; // Wallet system to track gold
 
     private void Awake()
     {
@@ -63,6 +64,19 @@ public class GameManager : MonoBehaviour
     public List<Item> GetInventory()
     {
         return inventory;
+    }
+
+    // Wallet methods
+    public void AddGold(int amount)
+    {
+        playerGold += amount;
+        Debug.Log($"Gold added. Current balance: {playerGold}");
+    }
+
+    public void DeductGold(int amount)
+    {
+        playerGold = Mathf.Max(0, playerGold - amount); // Ensure gold does not go negative
+        Debug.Log($"Gold deducted. Current balance: {playerGold}");
     }
 
     // Save player position

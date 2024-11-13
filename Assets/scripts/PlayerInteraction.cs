@@ -57,10 +57,11 @@ public class PlayerInteraction : MonoBehaviour
             catchMessageUI.DisplayCatchMessage(caughtFish.fishName);
         }
 
-        // Create an Item and add to inventory
+        // Create an Item and add to inventory with price
         if (inventoryManager != null)
         {
-            Item fishItem = new Item(caughtFish.fishName, 1, caughtFish.fishSprite, caughtFish.fishDescription);
+            int fishPrice = caughtFish.price;
+            Item fishItem = new Item(caughtFish.fishName, 1, caughtFish.fishSprite, caughtFish.fishDescription, fishPrice, true);
             inventoryManager.AddItem(fishItem);
         }
     }
