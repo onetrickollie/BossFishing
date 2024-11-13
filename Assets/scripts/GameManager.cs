@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour
     public int playerGold = 0; // Wallet system to track gold
 
     public event Action<int> OnGoldChanged; // Event for gold changes
+    public event Action<float> OnVolumeChanged; // Event for volume changes
+
+    private float volume = 1f; // Default volume level (0 to 1)
 
     private void Awake()
     {
@@ -90,5 +93,24 @@ public class GameManager : MonoBehaviour
         playerPosition = position;
         Debug.Log($"Player position saved: {playerPosition}");
     }
-    
+
+    // Volume control methods
+    public void SetVolume(float newVolume)
+    {
+        volume = Mathf.Clamp01(newVolume); // Clamp the volume between 0 and 1
+        OnVolumeChanged?.Invoke(volume);
+        Debug.Log($"Volume set to: {volume}");
+    }
+
+    public float GetVolume()
+    {
+        return volume;
+    }
+
+    // Method to handle returning to the main menu
+    public void ReturnToMainMenu()
+    {
+        // Assuming "WelcomeScene" is the name of the main menu scene
+        UnityEngine.SceneManagement.SceneManager.LoadScene("WelcomeScene");
+    }
 }
