@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fishName: shefinah
   fishSprite: {fileID: 1097189205, guid: 3598f4774fda74cc6bf767a67b220cc9, type: 3}
+  fishDescription: Shefinah, the fabulous pink fish with a flair for drama,. Don't
+    be fooled by her cute looks, this fish has a biting wit sharper than a barracuda's
+    tooth and a taste for adventure that usually ends in hilarious blunders
