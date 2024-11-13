@@ -5,16 +5,25 @@ using System.Collections.Generic;
 public class PlayerInteraction : MonoBehaviour
 {
     private bool canFish = false;
-    private bool isFishing = false; // To prevent multiple fishing attempts
+    private bool isFishing = false; // Prevent multiple fishing attempts
+    private bool fishBiting = false; // Track if the fish is currently biting
 
     [SerializeField]
     private List<FishData> fishList = new List<FishData>(); // List of fish data (ScriptableObjects)
     [SerializeField]
     private InventoryManager inventoryManager;
     [SerializeField]
-    private AudioSource fishingSound; // Reference to an AudioSource for playing fishing sound
+    private AudioSource mainAudioSource; // Reference to an AudioSource for playing general sounds
+    [SerializeField]
+    private AudioSource fishBiteAudioSource; // Separate AudioSource for fish bite sound
+    [SerializeField]
+    private AudioClip fishingSound; // Sound when fishing starts
+    [SerializeField]
+    private AudioClip fishBiteSound; // Sound when fish bites
     [SerializeField]
     private GameObject exclamationMark; // Reference to the exclamation mark GameObject
+    [SerializeField]
+    private Animator animator; // Reference to the Animator component
 
     private CatchMessageUI catchMessageUI;
 
@@ -30,6 +39,15 @@ public class PlayerInteraction : MonoBehaviour
         {
             exclamationMark.SetActive(false); // Ensure the exclamation mark is hidden initially
         }
+
+        if (mainAudioSource == null)
+        {
+            Debug.LogWarning("No AudioSource assigned for general sound playback.");
+        }
+        if (fishBiteAudioSource == null)
+        {
+            Debug.LogWarning("No AudioSource assigned for fish bite sound playback.");
+        }
     }
 
     private void Update()
@@ -37,6 +55,16 @@ public class PlayerInteraction : MonoBehaviour
         if (canFish && Input.GetMouseButtonDown(0) && !isFishing)
         {
             StartCoroutine(FishingRoutine()); // Start the fishing coroutine
+        }
+
+        if (fishBiting && Input.GetMouseButtonDown(0))
+        {
+            fishBiting = false; // Stop the biting state
+            if (exclamationMark != null)
+            {
+                exclamationMark.SetActive(false);
+            }
+            Fish(); // Catch the fish
         }
     }
 
@@ -62,33 +90,62 @@ public class PlayerInteraction : MonoBehaviour
     {
         isFishing = true;
 
-        // Play fishing sound
-        if (fishingSound != null)
+        // Play fishing animation
+        if (animator != null)
         {
-            fishingSound.Play();
+            animator.SetTrigger("StartFishing"); // Assumes you have a trigger parameter called "StartFishing"
+        }
+
+        // Play fishing sound
+        if (mainAudioSource != null && fishingSound != null)
+        {
+            mainAudioSource.PlayOneShot(fishingSound);
         }
 
         // Wait for a random duration before a fish is on the hook
-        float waitTime = Random.Range(2f, 5f); // Random wait between 2 to 5 seconds
+        float waitTime = Random.Range(3f, 5f); // Random wait between 3 to 5 seconds
         yield return new WaitForSeconds(waitTime);
 
-        // Display exclamation mark to indicate a fish is on the hook
+        // Play fish bite sound and display exclamation mark
+        if (fishBiteAudioSource != null && fishBiteSound != null)
+        {
+            fishBiteAudioSource.clip = fishBiteSound;
+            fishBiteAudioSource.Play();
+            StartCoroutine(StopAudioAfterDelay(fishBiteAudioSource, 0.5f)); // Stop the sound after 0.5 seconds (adjust as needed)
+        }
+
         if (exclamationMark != null)
         {
             exclamationMark.SetActive(true);
         }
 
-        // Wait for the player to click again to catch the fish
-        yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
+        // Set state for the fish biting
+        fishBiting = true;
 
-        // Hide the exclamation mark
-        if (exclamationMark != null)
+        // Wait for a maximum of 1 second for the player to respond
+        yield return new WaitForSeconds(1f);
+
+        // Check if the player missed the response window
+        if (fishBiting)
         {
-            exclamationMark.SetActive(false);
+            fishBiting = false;
+            if (exclamationMark != null)
+            {
+                exclamationMark.SetActive(false);
+            }
+            Debug.Log("Missed the fish!");
+        }
+        else
+        {
+            // Player successfully caught a fish
+            Fish();
         }
 
-        // Catch the fish
-        Fish();
+        // End fishing animation here
+        if (animator != null)
+        {
+            animator.SetTrigger("StopFishing"); // Only set after the fishing routine is fully complete
+        }
 
         isFishing = false;
     }
@@ -110,6 +167,15 @@ public class PlayerInteraction : MonoBehaviour
             int fishPrice = caughtFish.price;
             Item fishItem = new Item(caughtFish.fishName, 1, caughtFish.fishSprite, caughtFish.fishDescription, fishPrice, true);
             inventoryManager.AddItem(fishItem);
+        }
+    }
+
+    private IEnumerator StopAudioAfterDelay(AudioSource source, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (source.isPlaying)
+        {
+            source.Stop(); // Stop the audio after the delay
         }
     }
 }
