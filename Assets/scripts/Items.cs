@@ -1,7 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-[System.Serializable]
+// [System.Serializable]
 // A data structure to hold item data
 public class Item
 {

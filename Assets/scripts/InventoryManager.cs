@@ -5,8 +5,13 @@ public class InventoryManager : MonoBehaviour
 {
     public GameObject InventoryMenu;
     private bool menuActivated;
-    public List<Item> items = new List<Item>();
+    public List<Item> items = new List<Item>(); // Local copy of inventory items
     public ItemSlot[] itemSlot; // Assuming you have slots to display items
+
+    private void Start()
+    {
+        LoadInventoryFromGameManager(); // Load existing inventory when the scene starts
+    }
 
     private void Update()
     {
@@ -25,9 +30,10 @@ public class InventoryManager : MonoBehaviour
         {
             if (!itemSlot[i].isFull)
             {
-                items.Add(newItem); // Add the new item to the items list
+                items.Add(newItem); // Add the new item to the local items list
                 itemSlot[i].AddItem(newItem); // Update the item slot UI
                 itemSlot[i].isFull = true; // Mark the slot as full
+                GameManager.Instance.AddItemToInventory(newItem); // Add item to the GameManager's persistent inventory
                 Debug.Log($"Added {newItem.itemName} to the inventory.");
                 return;
             }
@@ -85,6 +91,22 @@ public class InventoryManager : MonoBehaviour
                     Debug.LogWarning("Item description text is null in the selected slot.");
                 }
             }
+        }
+    }
+
+    private void LoadInventoryFromGameManager()
+    {
+        if (GameManager.Instance == null)
+        {
+            Debug.LogWarning("GameManager instance is not found. Inventory loading skipped.");
+            return;
+        }
+
+        // Load items from GameManager's inventory
+        List<Item> persistentInventory = GameManager.Instance.GetInventory();
+        foreach (Item item in persistentInventory)
+        {
+            AddItem(item); // Add items to the UI slots (assuming there's enough space)
         }
     }
 }

@@ -14,10 +14,18 @@ public class PlayerMovement : MonoBehaviour
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // Only load position if it was saved and it's not the initial load
-        if (GameManager.Instance != null && GameManager.Instance.playerPosition != Vector3.zero)
+        if (GameManager.Instance != null)
         {
-            transform.position = GameManager.Instance.playerPosition;
+            // Use scene-specific spawn point if available
+            Vector3 spawnPoint = GameManager.Instance.GetSpawnPointForScene(GameManager.Instance.currentScene);
+            if (spawnPoint != Vector3.zero)
+            {
+                transform.position = spawnPoint;
+            }
+            else if (GameManager.Instance.playerPosition != Vector3.zero)
+            {
+                transform.position = GameManager.Instance.playerPosition;
+            }
         }
     }
 
@@ -47,5 +55,14 @@ public class PlayerMovement : MonoBehaviour
     {
         // Move the player using Rigidbody for consistent movement speed
         rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
+    }
+
+    private void OnDisable()
+    {
+        // Save player position when the GameObject is disabled or destroyed (e.g., on scene transition)
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.SavePlayerPosition(transform.position);
+        }
     }
 }
