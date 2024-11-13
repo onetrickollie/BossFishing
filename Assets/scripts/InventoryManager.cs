@@ -18,29 +18,73 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-public void AddItem(Item newItem)
-{
-    // Ensure we check each slot and find the first available one
-    for (int i = 0; i < itemSlot.Length; i++)
+    public void AddItem(Item newItem)
     {
-        if (!itemSlot[i].isFull)
+        // Ensure we check each slot and find the first available one
+        for (int i = 0; i < itemSlot.Length; i++)
         {
-            items.Add(newItem); // Add the new item to the items list
-            itemSlot[i].AddItem(newItem); // Update the item slot UI
-            itemSlot[i].isFull = true; // Mark the slot as full
-            Debug.Log($"Added {newItem.itemName} to the inventory.");
-            return;
+            if (!itemSlot[i].isFull)
+            {
+                items.Add(newItem); // Add the new item to the items list
+                itemSlot[i].AddItem(newItem); // Update the item slot UI
+                itemSlot[i].isFull = true; // Mark the slot as full
+                Debug.Log($"Added {newItem.itemName} to the inventory.");
+                return;
+            }
+        }
+        Debug.LogWarning("Inventory is full. Cannot add more items.");
+    }
+
+    public void DeselectAllSlots()
+    {
+        for (int i = 0; i < itemSlot.Length; i++)
+        {
+            itemSlot[i].selectedShader.SetActive(false);
+            itemSlot[i].thisItemSelected = false;
         }
     }
-    Debug.LogWarning("Inventory is full. Cannot add more items.");
-}
 
-public void DeselectAllSlots(){
-    for (int i = 0; i < itemSlot.Length; i++)
+    public void DisplayItemDetails(Item item)
     {
-        itemSlot[i].selectedShader.SetActive(false);
-        itemSlot[i].thisItemSelected = false;
+        if (item == null)
+        {
+            Debug.LogWarning("DisplayItemDetails was called with a null item.");
+            return;
+        }
 
+        Debug.Log($"Displaying details for item: {item.itemName}");
+
+        foreach (var slot in itemSlot)
+        {
+            if (slot.thisItemSelected)
+            {
+                if (slot.itemDescriptionImage != null)
+                {
+                    slot.itemDescriptionImage.sprite = item.itemSprite;
+                }
+                else
+                {
+                    Debug.LogWarning("Item description image is null in the selected slot.");
+                }
+
+                if (slot.itemDescriptionNameText != null)
+                {
+                    slot.itemDescriptionNameText.text = item.itemName;
+                }
+                else
+                {
+                    Debug.LogWarning("Item description name text is null in the selected slot.");
+                }
+
+                if (slot.itemDescriptionText != null)
+                {
+                    slot.itemDescriptionText.text = item.Description;
+                }
+                else
+                {
+                    Debug.LogWarning("Item description text is null in the selected slot.");
+                }
+            }
+        }
     }
-}
 }

@@ -96,8 +96,12 @@ MonoBehaviour:
   itemNameText: {fileID: 2865772666682637199}
   quantityText: {fileID: 4758001573599807066}
   isFull: 0
+  itemDescription: this is a fish
   selectedShader: {fileID: 6475431049855040766}
   thisItemSelected: 0
+  itemDescriptionImage: {fileID: 0}
+  itemDescriptionText: {fileID: 0}
+  itemDescriptionNameText: {fileID: 2865772666682637199}
 --- !u!1 &4741623035696890483
 GameObject:
   m_ObjectHideFlags: 0

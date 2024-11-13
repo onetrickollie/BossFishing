@@ -60,7 +60,7 @@ public class PlayerInteraction : MonoBehaviour
         // Create an Item and add to inventory
         if (inventoryManager != null)
         {
-            Item fishItem = new Item(caughtFish.fishName, 1, caughtFish.fishSprite);
+            Item fishItem = new Item(caughtFish.fishName, 1, caughtFish.fishSprite, caughtFish.fishDescription);
             inventoryManager.AddItem(fishItem);
         }
     }
