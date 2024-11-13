@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    private bool isFishing = false;
     public float moveSpeed = 5f;
     private Animator animator;
     private Rigidbody2D rb;
@@ -31,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+         if (isFishing) return;
         // Capture movement input
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
@@ -64,5 +66,15 @@ public class PlayerMovement : MonoBehaviour
         {
             GameManager.Instance.SavePlayerPosition(transform.position);
         }
+    }
+    public void StartFishing()
+    {
+        isFishing = true;
+        animator.SetTrigger("StartFishing"); // Assume this trigger starts the fishing animation
+    }
+
+    public void EndFishing()
+    {
+        isFishing = false;
     }
 }

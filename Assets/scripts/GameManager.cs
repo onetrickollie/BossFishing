@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class GameManager : MonoBehaviour
     public string currentScene; // Track the current scene
     public List<Item> inventory = new List<Item>(); // Persistent inventory list
     public int playerGold = 0; // Wallet system to track gold
+
+    public event Action<int> OnGoldChanged; // Event for gold changes
 
     private void Awake()
     {
@@ -70,12 +73,14 @@ public class GameManager : MonoBehaviour
     public void AddGold(int amount)
     {
         playerGold += amount;
+        OnGoldChanged?.Invoke(playerGold);
         Debug.Log($"Gold added. Current balance: {playerGold}");
     }
 
     public void DeductGold(int amount)
     {
-        playerGold = Mathf.Max(0, playerGold - amount); // Ensure gold does not go negative
+        playerGold = Mathf.Max(0, playerGold - amount);
+        OnGoldChanged?.Invoke(playerGold);
         Debug.Log($"Gold deducted. Current balance: {playerGold}");
     }
 
@@ -85,4 +90,5 @@ public class GameManager : MonoBehaviour
         playerPosition = position;
         Debug.Log($"Player position saved: {playerPosition}");
     }
+    
 }
