@@ -24,7 +24,7 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField]
     private Animator animator; // Reference to the Animator component
     [SerializeField]
-    private TMP_Text InGameMessage;
+    private TMP_Text InGameMessage; // Text field for displaying messages
     [SerializeField]
     private FishingMinigame fishingMinigame; // Reference to the minigame script
 
@@ -91,7 +91,7 @@ public class PlayerInteraction : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("Water"))
         {
             canFish = true;
-            InGameMessage.text = "You can fish here! :3";
+            InGameMessage.text = "You have entered the fishing zone";
             Debug.Log("Entered fishing area.");
         }
     }
@@ -101,7 +101,7 @@ public class PlayerInteraction : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("Water"))
         {
             canFish = false;
-            InGameMessage.text = "You can't fish here anymore :(";
+            InGameMessage.text = "You have left the fishing zone";
             Debug.Log("Exited fishing area.");
         }
     }
@@ -117,13 +117,12 @@ public class PlayerInteraction : MonoBehaviour
         if (animator != null)
         {
             animator.SetInteger("RodIndex", GameManager.Instance.GetEquippedRodIndex()); // Update RodIndex first
-            Debug.Log("Resetting StartFishing trigger");
             animator.ResetTrigger("StartFishing");
-            Debug.Log("Setting StartFishing trigger");
             animator.SetTrigger("StartFishing");
             Debug.Log("Fishing animation triggered with updated RodIndex.");
         }
-        else{
+        else
+        {
             Debug.LogWarning("No Animator component found on the player.");
         }
 
@@ -160,7 +159,8 @@ public class PlayerInteraction : MonoBehaviour
             {
                 exclamationMark.SetActive(false);
             }
-            InGameMessage.text = "Missed the fish! :o";
+            InGameMessage.text = "Missed the fish!";
+            Debug.Log("Player missed the fish.");
 
             // End the fishing routine
             isFishing = false;
@@ -196,6 +196,9 @@ public class PlayerInteraction : MonoBehaviour
             catchMessageUI.DisplayCatchMessage(caughtFish.fishName);
         }
 
+        InGameMessage.text = "You caught a fish!";
+        Debug.Log($"Caught fish: {caughtFish.fishName}");
+
         // Create an Item and add to inventory
         if (inventoryManager != null)
         {
@@ -203,13 +206,11 @@ public class PlayerInteraction : MonoBehaviour
             Item fishItem = new Item(caughtFish.fishName, 1, caughtFish.fishSprite, caughtFish.fishDescription, fishPrice, true);
             inventoryManager.AddItem(fishItem);
         }
-
-        InGameMessage.text = "You caught a fish! :D";
     }
 
     private void MissedFish()
     {
-        isMinigameRunning = false; // Reset the minigame flag
+        isMinigameRunning = false;
         fishBiting = false;
         isFishing = false;
         if (exclamationMark != null)
@@ -217,7 +218,8 @@ public class PlayerInteraction : MonoBehaviour
             exclamationMark.SetActive(false);
         }
 
-        InGameMessage.text = "Missed the fish! :o";
+        InGameMessage.text = "Missed the fish!";
+        Debug.Log("Player missed the fish during the minigame.");
     }
 
     private IEnumerator StopAudioAfterDelay(AudioSource source, float delay)

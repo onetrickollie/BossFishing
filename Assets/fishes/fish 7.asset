@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f43444a5cc5f84bb58f8f7c406b83928, type: 3}
   m_Name: fish 7
   m_EditorClassIdentifier: 
-  fishName: patrick<3
+  fishName: patrick
   fishSprite: {fileID: -1876979906, guid: 3598f4774fda74cc6bf767a67b220cc9, type: 3}
-  fishDescription: starrr
+  fishDescription: "Meet Patrick, the chill fish who\u2019s often left on the sidelines.
+    While others swim in the spotlight, Patrick floats quietly, waiting to be noticed.
+    He\u2019s a kind and laid-back guy\u2014always happy to be there. Maybe Patrick
+    is the catch you didn\u2019t know you needed."
   price: 15

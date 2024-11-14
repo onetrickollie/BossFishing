@@ -32,65 +32,58 @@ public class FishingMinigame : MonoBehaviour
         SetRandomTargetIndicator(); // Set the initial target indicator position
     }
 
-    private void Update()
+private void Update()
+{
+    if (isMinigameActive)
     {
-        if (isMinigameActive)
+        // Handle player clicks and progress
+        if (Input.GetMouseButtonDown(0))
         {
-            // Reduce grace time if active
-            if (graceTimeRemaining > 0)
-            {
-                graceTimeRemaining -= Time.deltaTime;
-            }
+            float increaseAmount = currentFillSpeed * 2 * Time.deltaTime;
+            progressBar.value += increaseAmount;
+            lastClickTime = Time.time; // Update last click time
+            Debug.Log($"Progress increased by clicking. New ProgressBar Value: {progressBar.value}");
+        }
+        else if (graceTimeRemaining <= 0 && Time.time - lastClickTime >= decayCooldown)
+        {
+            // Apply decay if grace period has ended and cooldown has passed
+            float decayAmount = decayRate * Time.deltaTime;
+            progressBar.value -= decayAmount;
+            Debug.Log($"Progress decayed by: {decayAmount}. New ProgressBar Value: {progressBar.value}");
+        }
 
-            // Detect mouse button clicks to increase progress
-            if (Input.GetMouseButtonDown(0)) // Detects individual mouse clicks
-            {
-                float increaseAmount = currentFillSpeed * 2 * Time.deltaTime;
-                progressBar.value += increaseAmount;
-                lastClickTime = Time.time; // Update last click time
-                Debug.Log($"Click detected. Increased ProgressBar by: {increaseAmount}, New Value: {progressBar.value}");
-            }
-            else if (graceTimeRemaining <= 0 && Time.time - lastClickTime >= decayCooldown) // Decay only after grace period and cooldown
-            {
-                // Decay the progress when the mouse is not being clicked
-                progressBar.value -= decayRate * Time.deltaTime;
-                Debug.Log($"ProgressBar decayed. New Value: {progressBar.value}");
-            }
+        // Clamp the value between 0 and 1
+        progressBar.value = Mathf.Clamp01(progressBar.value);
 
-            // Clamp the value to ensure it stays between 0 and 1
-            progressBar.value = Mathf.Clamp01(progressBar.value);
+        // Track elapsed time
+        elapsedTime += Time.deltaTime;
 
-            // Track elapsed time
-            elapsedTime += Time.deltaTime;
-
-            // Check win condition
-            if (progressBar.value >= targetFillAmount)
-            {
-                WinMinigame(); // Call win logic and ensure the minigame stops
-            }
-            // Check lose condition
-            else if (elapsedTime >= minigameDuration || progressBar.value <= 0)
-            {
-                LoseMinigame();
-            }
+        // Check win condition
+        if (progressBar.value >= targetFillAmount)
+        {
+            WinMinigame();
+        }
+        // Check lose condition
+        else if (elapsedTime >= minigameDuration || progressBar.value <= 0)
+        {
+            LoseMinigame();
         }
     }
+}
 
     public void StartMinigame()
     {
+        if (isMinigameActive) return; // Prevent starting a new game if one is already active
+
         progressBar.value = 0.2f; // Reset progress to initial value (20%)
         targetFillAmount = UnityEngine.Random.Range(minTargetFill, maxTargetFill);
-        Debug.Log($"Target Fill Amount set to: {targetFillAmount}");
         UpdateTargetIndicator(); // Update the indicator position based on the new target
         fishingPanel.SetActive(true); // Show the panel
         isMinigameActive = true;
         elapsedTime = 0f; // Reset timer
         graceTimeRemaining = gracePeriod; // Set initial grace period
         lastClickTime = Time.time; // Set initial last click time
-
-        // Set the fill speed based on the equipped rod
-        SetFillSpeedBasedOnRod();
-        Debug.Log("Minigame started.");
+        SetFillSpeedBasedOnRod(); // Set the fill speed based on the equipped rod
     }
 
     private void WinMinigame()
@@ -114,7 +107,6 @@ public class FishingMinigame : MonoBehaviour
     private void SetRandomTargetIndicator()
     {
         targetFillAmount = UnityEngine.Random.Range(minTargetFill, maxTargetFill);
-        Debug.Log($"Random Target Fill Amount set to: {targetFillAmount}");
         UpdateTargetIndicator();
     }
 
@@ -128,7 +120,6 @@ public class FishingMinigame : MonoBehaviour
             // Calculate the correct position for the target indicator
             float targetPositionX = targetFillAmount * progressBarWidth - (progressBarWidth / 2f); // Offset for centering within progress bar bounds
             targetIndicator.anchoredPosition = new Vector2(targetPositionX, targetIndicator.anchoredPosition.y);
-            Debug.Log($"Target indicator position updated to: {targetIndicator.anchoredPosition}");
         }
     }
 
@@ -136,7 +127,6 @@ public class FishingMinigame : MonoBehaviour
     {
         int rodIndex = GameManager.Instance.GetEquippedRodIndex(); // Get the current rod index from GameManager
         currentFillSpeed = baseFillSpeed * (1 + rodIndex * 0.2f); // Adjust fill speed based on rod index
-        Debug.Log($"Fill speed adjusted for rod index {rodIndex}: {currentFillSpeed}");
     }
 
     public void SetFillSpeed(float multiplier)

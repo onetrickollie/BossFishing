@@ -14,5 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fishName: cellywelly
   fishSprite: {fileID: -1305975730, guid: 3598f4774fda74cc6bf767a67b220cc9, type: 3}
-  fishDescription: ellewelly
+  fishDescription: "Meet Cellywelly, the teal and green fish who\u2019s always bubbling
+    with energy.  Cellywelly\u2019s the kind of fish who\u2019s always down for an
+    adventure. She\u2019s got a girly charm that can turn sassy in an instant, but
+    it's all part of her playful nature."
   price: 40
