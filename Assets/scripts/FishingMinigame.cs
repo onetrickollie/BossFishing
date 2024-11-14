@@ -33,7 +33,7 @@ public class FishingMinigame : MonoBehaviour
         if (isMinigameActive)
         {
             // Detect mouse button clicks to increase progress
-            if (Input.GetMouseButton(0)) // Left mouse button
+            if (Input.GetMouseButtonDown(0)) // Left mouse button
             {
                 progressBar.value += currentFillSpeed * Time.deltaTime;
             }
@@ -99,9 +99,11 @@ public class FishingMinigame : MonoBehaviour
     {
         if (targetIndicator != null && progressBar != null)
         {
-            // Adjust targetIndicator's position to reflect targetFillAmount
+            // Ensure the targetIndicator position is relative to the progress bar's width
             float progressBarWidth = progressBar.GetComponent<RectTransform>().rect.width;
-            float targetPositionX = targetFillAmount * progressBarWidth;
+
+            // Calculate the correct position for the target indicator
+            float targetPositionX = targetFillAmount * progressBarWidth - (progressBarWidth / 2f); // Offset for centering within progress bar bounds
             targetIndicator.anchoredPosition = new Vector2(targetPositionX, targetIndicator.anchoredPosition.y);
         }
     }

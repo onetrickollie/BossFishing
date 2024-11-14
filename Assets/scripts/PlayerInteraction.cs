@@ -110,12 +110,21 @@ public class PlayerInteraction : MonoBehaviour
     {
         isFishing = true;
         Debug.Log("Fishing routine started.");
+        animator.SetInteger("RodIndex", GameManager.Instance.GetEquippedRodIndex());
+        Debug.Log($"Set RodIndex in Animator: {GameManager.Instance.GetEquippedRodIndex()}");
 
         // Play fishing animation
         if (animator != null)
         {
+            animator.SetInteger("RodIndex", GameManager.Instance.GetEquippedRodIndex()); // Update RodIndex first
+            Debug.Log("Resetting StartFishing trigger");
+            animator.ResetTrigger("StartFishing");
+            Debug.Log("Setting StartFishing trigger");
             animator.SetTrigger("StartFishing");
-            Debug.Log("Fishing animation triggered.");
+            Debug.Log("Fishing animation triggered with updated RodIndex.");
+        }
+        else{
+            Debug.LogWarning("No Animator component found on the player.");
         }
 
         // Wait for a random duration before a fish is on the hook
@@ -129,13 +138,11 @@ public class PlayerInteraction : MonoBehaviour
             fishBiteAudioSource.clip = fishBiteSound;
             fishBiteAudioSource.Play();
             StartCoroutine(StopAudioAfterDelay(fishBiteAudioSource, 1f));
-            Debug.Log("Fish bite sound played.");
         }
 
         if (exclamationMark != null)
         {
             exclamationMark.SetActive(true);
-            Debug.Log("Exclamation mark shown.");
         }
 
         // Set state for the fish biting and give player a brief window to respond
@@ -154,7 +161,6 @@ public class PlayerInteraction : MonoBehaviour
                 exclamationMark.SetActive(false);
             }
             InGameMessage.text = "Missed the fish! :o";
-            Debug.Log("Player missed the fish.");
 
             // End the fishing routine
             isFishing = false;
@@ -164,8 +170,6 @@ public class PlayerInteraction : MonoBehaviour
         // If player responded, start the minigame
         if (fishBiting == false && isFishing)
         {
-            // Start the minigame here
-            Debug.Log("Player reacted in time. Starting minigame...");
             fishingMinigame.StartMinigame();
         }
 
@@ -175,8 +179,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void CatchFish()
     {
-        isMinigameRunning = false; // Reset the minigame flag
-        Debug.Log("Player caught a fish.");
+        isMinigameRunning = false;
         fishBiting = false;
         isFishing = false;
         if (exclamationMark != null)
@@ -191,7 +194,6 @@ public class PlayerInteraction : MonoBehaviour
         if (catchMessageUI != null)
         {
             catchMessageUI.DisplayCatchMessage(caughtFish.fishName);
-            Debug.Log($"Caught fish: {caughtFish.fishName}");
         }
 
         // Create an Item and add to inventory
@@ -200,7 +202,6 @@ public class PlayerInteraction : MonoBehaviour
             int fishPrice = caughtFish.price;
             Item fishItem = new Item(caughtFish.fishName, 1, caughtFish.fishSprite, caughtFish.fishDescription, fishPrice, true);
             inventoryManager.AddItem(fishItem);
-            Debug.Log($"{caughtFish.fishName} added to inventory.");
         }
 
         InGameMessage.text = "You caught a fish! :D";
@@ -209,7 +210,6 @@ public class PlayerInteraction : MonoBehaviour
     private void MissedFish()
     {
         isMinigameRunning = false; // Reset the minigame flag
-        Debug.Log("Player missed the fish during the minigame.");
         fishBiting = false;
         isFishing = false;
         if (exclamationMark != null)
@@ -226,7 +226,6 @@ public class PlayerInteraction : MonoBehaviour
         if (source.isPlaying)
         {
             source.Stop();
-            Debug.Log("Fish bite sound stopped.");
         }
     }
 }

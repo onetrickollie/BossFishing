@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     public List<Item> inventory = new List<Item>(); // Persistent inventory list
     public int playerGold = 0; // Wallet system to track gold
 
-    private int equippedRodIndex = 0;
+    private int equippedRodIndex = 0; // Main variable for tracking the equipped rod
 
     public event Action<int> OnGoldChanged; // Event for gold changes
     public event Action<float> OnVolumeChanged; // Event for volume changes
@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     private float volume = 1f; // Default volume level (0 to 1)
 
     // New Rod-related variables
-    public int currentRodIndex = 0; // 0 for default rod, increments for upgraded rods
+    // Removed redundant currentRodIndex for clarity
     public List<RodData> availableRods; // List of available rods (assignable in the Inspector)
 
     private void Awake()
@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
             if (playerGold >= selectedRod.price)
             {
                 DeductGold(selectedRod.price);
-                currentRodIndex = rodIndex; // Equip the new rod
+                EquipRod(rodIndex);
                 Debug.Log($"Bought and equipped {selectedRod.rodName}!");
                 return true;
             }
@@ -129,8 +129,10 @@ public class GameManager : MonoBehaviour
         OnVolumeChanged?.Invoke(volume);
         Debug.Log($"Volume set to: {volume}");
     }
+
     public int GetEquippedRodIndex()
     {
+        Debug.Log($"GetEquippedRodIndex called: {equippedRodIndex}");
         return equippedRodIndex;
     }
 
@@ -148,7 +150,6 @@ public class GameManager : MonoBehaviour
     // Method to handle returning to the main menu
     public void ReturnToMainMenu()
     {
-        // Assuming "WelcomeScene" is the name of the main menu scene
-        UnityEngine.SceneManagement.SceneManager.LoadScene("WelcomeScene");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("welcome");
     }
 }

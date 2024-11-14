@@ -20548,7 +20548,7 @@ MonoBehaviour:
   progressBar: {fileID: 304108549}
   targetIndicator: {fileID: 254810571}
   baseFillSpeed: 0.1
-  decayRate: 0.001
+  decayRate: 0.05
   minTargetFill: 0.5
   maxTargetFill: 1
   fishingPanel: {fileID: 1889103118}
@@ -20882,9 +20882,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPosition: {x: 4.72, y: -11.98, z: 0}
   currentScene: 
-  playerGold: 0
+  playerGold: 2000
   currentRodIndex: 0
-  availableRods: []
+  availableRods:
+  - {fileID: 11400000, guid: d640938f5a71e4688970cf1c57ce578e, type: 2}
+  - {fileID: 11400000, guid: 9d46a63b3559242cf8262743a98ba98b, type: 2}
+  - {fileID: 11400000, guid: 5be59bae48627471e960aa9a109a38c9, type: 2}
+  - {fileID: 11400000, guid: d208f7e60822641c681b662dcfc4b0f1, type: 2}
 --- !u!4 &2071254745
 Transform:
   m_ObjectHideFlags: 0
