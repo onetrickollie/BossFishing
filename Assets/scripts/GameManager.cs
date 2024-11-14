@@ -11,10 +11,16 @@ public class GameManager : MonoBehaviour
     public List<Item> inventory = new List<Item>(); // Persistent inventory list
     public int playerGold = 0; // Wallet system to track gold
 
+    private int equippedRodIndex = 0;
+
     public event Action<int> OnGoldChanged; // Event for gold changes
     public event Action<float> OnVolumeChanged; // Event for volume changes
 
     private float volume = 1f; // Default volume level (0 to 1)
+
+    // New Rod-related variables
+    public int currentRodIndex = 0; // 0 for default rod, increments for upgraded rods
+    public List<RodData> availableRods; // List of available rods (assignable in the Inspector)
 
     private void Awake()
     {
@@ -27,6 +33,28 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    // Method to switch the player's rod
+    public bool BuyRod(int rodIndex)
+    {
+        if (rodIndex >= 0 && rodIndex < availableRods.Count)
+        {
+            RodData selectedRod = availableRods[rodIndex];
+            if (playerGold >= selectedRod.price)
+            {
+                DeductGold(selectedRod.price);
+                currentRodIndex = rodIndex; // Equip the new rod
+                Debug.Log($"Bought and equipped {selectedRod.rodName}!");
+                return true;
+            }
+            else
+            {
+                Debug.Log("Not enough gold to buy this rod.");
+                return false;
+            }
+        }
+        return false;
     }
 
     // Method to set the spawn point for a specific scene
@@ -100,6 +128,16 @@ public class GameManager : MonoBehaviour
         volume = Mathf.Clamp01(newVolume); // Clamp the volume between 0 and 1
         OnVolumeChanged?.Invoke(volume);
         Debug.Log($"Volume set to: {volume}");
+    }
+    public int GetEquippedRodIndex()
+    {
+        return equippedRodIndex;
+    }
+
+    public void EquipRod(int rodIndex)
+    {
+        equippedRodIndex = rodIndex;
+        Debug.Log($"Equipped rod index set to: {rodIndex}");
     }
 
     public float GetVolume()

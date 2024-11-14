@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+
 public class PlayerInteraction : MonoBehaviour
 {
     private bool canFish = false;
@@ -16,17 +17,20 @@ public class PlayerInteraction : MonoBehaviour
     private AudioSource mainAudioSource; // Reference to an AudioSource for playing general sounds
     [SerializeField]
     private AudioSource fishBiteAudioSource; // Separate AudioSource for fish bite sound
-    // Sound when fishing starts
     [SerializeField]
     private AudioClip fishBiteSound; // Sound when fish bites
     [SerializeField]
     private GameObject exclamationMark; // Reference to the exclamation mark GameObject
     [SerializeField]
     private Animator animator; // Reference to the Animator component
-    
     [SerializeField]
     private TMP_Text InGameMessage;
+    [SerializeField]
+    private FishingMinigame fishingMinigame; // Reference to the minigame script
+
     private CatchMessageUI catchMessageUI;
+
+    private bool isMinigameRunning = false; // New flag to indicate if the minigame is active
 
     private void Start()
     {
@@ -49,11 +53,18 @@ public class PlayerInteraction : MonoBehaviour
         {
             Debug.LogWarning("No AudioSource assigned for fish bite sound playback.");
         }
+
+        // Hook up the minigame completion events
+        if (fishingMinigame != null)
+        {
+            fishingMinigame.OnMinigameWin += CatchFish; // Call CatchFish if player wins
+            fishingMinigame.OnMinigameLose += MissedFish; // Call MissedFish if player loses
+        }
     }
 
     private void Update()
     {
-        if (canFish && Input.GetMouseButtonDown(0) && !isFishing)
+        if (canFish && Input.GetMouseButtonDown(0) && !isFishing && !isMinigameRunning)
         {
             StartCoroutine(FishingRoutine()); // Start the fishing coroutine
         }
@@ -65,7 +76,13 @@ public class PlayerInteraction : MonoBehaviour
             {
                 exclamationMark.SetActive(false);
             }
-            Fish(); // Catch the fish
+
+            // Start the fishing minigame if the player successfully clicks within the biting window
+            if (fishingMinigame != null)
+            {
+                isMinigameRunning = true; // Set the flag to indicate the minigame is running
+                fishingMinigame.StartMinigame(); // Show the progress bar and start minigame logic
+            }
         }
     }
 
@@ -75,6 +92,7 @@ public class PlayerInteraction : MonoBehaviour
         {
             canFish = true;
             InGameMessage.text = "You can fish here! :3";
+            Debug.Log("Entered fishing area.");
         }
     }
 
@@ -84,21 +102,25 @@ public class PlayerInteraction : MonoBehaviour
         {
             canFish = false;
             InGameMessage.text = "You can't fish here anymore :(";
+            Debug.Log("Exited fishing area.");
         }
     }
 
     private IEnumerator FishingRoutine()
     {
         isFishing = true;
+        Debug.Log("Fishing routine started.");
 
         // Play fishing animation
         if (animator != null)
         {
-            animator.SetTrigger("StartFishing"); // Assumes you have a trigger parameter called "StartFishing"
+            animator.SetTrigger("StartFishing");
+            Debug.Log("Fishing animation triggered.");
         }
 
         // Wait for a random duration before a fish is on the hook
-        float waitTime = Random.Range(3f, 5f); // Random wait between 3 to 5 seconds
+        float waitTime = UnityEngine.Random.Range(3f, 5f);
+        Debug.Log($"Waiting for {waitTime} seconds for a fish to bite...");
         yield return new WaitForSeconds(waitTime);
 
         // Play fish bite sound and display exclamation mark
@@ -106,21 +128,24 @@ public class PlayerInteraction : MonoBehaviour
         {
             fishBiteAudioSource.clip = fishBiteSound;
             fishBiteAudioSource.Play();
-            StartCoroutine(StopAudioAfterDelay(fishBiteAudioSource, 1f)); // Stop the sound after 0.5 seconds (adjust as needed)
+            StartCoroutine(StopAudioAfterDelay(fishBiteAudioSource, 1f));
+            Debug.Log("Fish bite sound played.");
         }
 
         if (exclamationMark != null)
         {
             exclamationMark.SetActive(true);
+            Debug.Log("Exclamation mark shown.");
         }
 
-        // Set state for the fish biting
+        // Set state for the fish biting and give player a brief window to respond
         fishBiting = true;
 
-        // Wait for a maximum of 1 second for the player to respond
-        yield return new WaitForSeconds(1f);
+        // Give the player a window of time to respond
+        float responseWindow = 1f;
+        yield return new WaitForSeconds(responseWindow);
 
-        // Check if the player missed the response window
+        // If player didn't react in time, it's a miss
         if (fishBiting)
         {
             fishBiting = false;
@@ -129,20 +154,44 @@ public class PlayerInteraction : MonoBehaviour
                 exclamationMark.SetActive(false);
             }
             InGameMessage.text = "Missed the fish! :o";
+            Debug.Log("Player missed the fish.");
+
+            // End the fishing routine
+            isFishing = false;
+            yield break;
         }
 
+        // If player responded, start the minigame
+        if (fishBiting == false && isFishing)
+        {
+            // Start the minigame here
+            Debug.Log("Player reacted in time. Starting minigame...");
+            fishingMinigame.StartMinigame();
+        }
+
+        // End fishing routine
         isFishing = false;
     }
 
-    private void Fish()
+    private void CatchFish()
     {
-        int randomIndex = Random.Range(0, fishList.Count);
+        isMinigameRunning = false; // Reset the minigame flag
+        Debug.Log("Player caught a fish.");
+        fishBiting = false;
+        isFishing = false;
+        if (exclamationMark != null)
+        {
+            exclamationMark.SetActive(false);
+        }
+
+        int randomIndex = UnityEngine.Random.Range(0, fishList.Count);
         FishData caughtFish = fishList[randomIndex];
 
         // Display the catch message
         if (catchMessageUI != null)
         {
             catchMessageUI.DisplayCatchMessage(caughtFish.fishName);
+            Debug.Log($"Caught fish: {caughtFish.fishName}");
         }
 
         // Create an Item and add to inventory
@@ -151,7 +200,24 @@ public class PlayerInteraction : MonoBehaviour
             int fishPrice = caughtFish.price;
             Item fishItem = new Item(caughtFish.fishName, 1, caughtFish.fishSprite, caughtFish.fishDescription, fishPrice, true);
             inventoryManager.AddItem(fishItem);
+            Debug.Log($"{caughtFish.fishName} added to inventory.");
         }
+
+        InGameMessage.text = "You caught a fish! :D";
+    }
+
+    private void MissedFish()
+    {
+        isMinigameRunning = false; // Reset the minigame flag
+        Debug.Log("Player missed the fish during the minigame.");
+        fishBiting = false;
+        isFishing = false;
+        if (exclamationMark != null)
+        {
+            exclamationMark.SetActive(false);
+        }
+
+        InGameMessage.text = "Missed the fish! :o";
     }
 
     private IEnumerator StopAudioAfterDelay(AudioSource source, float delay)
@@ -159,7 +225,8 @@ public class PlayerInteraction : MonoBehaviour
         yield return new WaitForSeconds(delay);
         if (source.isPlaying)
         {
-            source.Stop(); // Stop the audio after the delay
+            source.Stop();
+            Debug.Log("Fish bite sound stopped.");
         }
     }
 }
