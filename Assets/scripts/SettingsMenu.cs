@@ -5,22 +5,29 @@ using UnityEngine.SceneManagement;
 public class SettingsMenu : MonoBehaviour
 {
     [SerializeField] private Slider volumeSlider;
-    [SerializeField] private AudioSource audioSource; // Reference to the main AudioSource for volume control
     [SerializeField] private GameObject settingsPanel; // Reference to the settings/pause menu panel
 
     private bool isPaused = false; // Track whether the game is paused
+    private AudioSource bgmAudioSource; // Reference to the main BGM AudioSource
 
     private void Start()
     {
-        // Initialize slider value to match the audio source volume
-        if (audioSource != null && volumeSlider != null)
+        // Find the BGM GameObject in the scene (it should be persistent from the first scene)
+        GameObject bgmObject = GameObject.Find("BGM");
+        if (bgmObject != null)
         {
-            volumeSlider.value = audioSource.volume;
+            bgmAudioSource = bgmObject.GetComponent<AudioSource>();
+        }
+
+        // Initialize slider value to match the BGM audio source volume
+        if (bgmAudioSource != null && volumeSlider != null)
+        {
+            volumeSlider.value = bgmAudioSource.volume;
             volumeSlider.onValueChanged.AddListener(SetVolume); // Attach listener to slider
         }
 
-        // Ensure the settings panel is hidden at the start
-        if (settingsPanel != null)
+        // Conditionally hide settings panel based on the active scene
+        if (settingsPanel != null && SceneManager.GetActiveScene().name != "welcome")
         {
             settingsPanel.SetActive(false);
         }
@@ -29,9 +36,9 @@ public class SettingsMenu : MonoBehaviour
     // Method to set volume based on slider value
     public void SetVolume(float value)
     {
-        if (audioSource != null)
+        if (bgmAudioSource != null)
         {
-            audioSource.volume = value;
+            bgmAudioSource.volume = value;
         }
     }
 

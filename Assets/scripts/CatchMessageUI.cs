@@ -34,5 +34,6 @@ public class CatchMessageUI : MonoBehaviour
         // Hide the message after the duration
         catchMessageText.text = "";
         catchMessageText.gameObject.SetActive(false);
+        
     }
 }

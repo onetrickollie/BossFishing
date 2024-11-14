@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
 
     public event Action<int> OnGoldChanged; // Event for gold changes
     public event Action<float> OnVolumeChanged; // Event for volume changes
-
+    private AudioSource bgmAudioSource;
     private float volume = 1f; // Default volume level (0 to 1)
 
     // New Rod-related variables
@@ -28,6 +28,11 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            GameObject bgmObject = GameObject.Find("BGM");
+            if (bgmObject != null)
+            {
+                bgmAudioSource = bgmObject.GetComponent<AudioSource>();
+            }
         }
         else
         {
@@ -146,10 +151,15 @@ public class GameManager : MonoBehaviour
     {
         return volume;
     }
-
-    // Method to handle returning to the main menu
+    public void StartGame()
+    {
+        Debug.Log("StartGame called");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("main"); 
+    }
+    
     public void ReturnToMainMenu()
     {
+        Time.timeScale = 1f;
         UnityEngine.SceneManagement.SceneManager.LoadScene("welcome");
     }
 }
