@@ -24913,7 +24913,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8390272aa4a284936bddc12d8bf8d0cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  goldText: {fileID: 0}
+  goldText: {fileID: 107525984}
 --- !u!114 &1078379204
 MonoBehaviour:
   m_ObjectHideFlags: 0
