@@ -3,15 +3,14 @@ using UnityEngine.UI;
 
 public class WelcomeSceneManager : MonoBehaviour
 {
-    [SerializeField] private Button startButton; // Assign this in the Inspector
-
+    [SerializeField] private Button startButton; 
+    [SerializeField] private GameObject instructionPanel;
     private void Start()
     {
         if (startButton != null)
         {
-            // Remove any existing listeners to avoid duplicate calls
-            startButton.onClick.RemoveAllListeners();
             // Add the desired listener
+            
             startButton.onClick.AddListener(OnStartButtonClicked);
         }
         else
@@ -20,9 +19,16 @@ public class WelcomeSceneManager : MonoBehaviour
         }
     }
 
-    private void OnStartButtonClicked()
+    public void OnStartButtonClicked()
     {
-        Debug.Log("Start button clicked");
-        GameManager.Instance.StartGame(); // Assuming GameManager handles scene transition
+        if (instructionPanel != null)
+        {
+            instructionPanel.SetActive(true);
+        }
+    }
+        public void OnQuitButtonClicked()
+    {
+        Debug.Log("Quit button clicked. Exiting the game...");
+        Application.Quit();
     }
 }

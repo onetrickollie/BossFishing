@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f43444a5cc5f84bb58f8f7c406b83928, type: 3}
   m_Name: fish 7
   m_EditorClassIdentifier: 
-  fishName: patrick
+  fishName: Martilapia(40g)
   fishSprite: {fileID: -1876979906, guid: 3598f4774fda74cc6bf767a67b220cc9, type: 3}
-  fishDescription: "Meet Patrick, the chill fish who\u2019s often left on the sidelines.
-    While others swim in the spotlight, Patrick floats quietly, waiting to be noticed.
-    He\u2019s a kind and laid-back guy\u2014always happy to be there. Maybe Patrick
-    is the catch you didn\u2019t know you needed."
-  price: 15
+  fishDescription: "Known for its motto, \u201CI\u2019m nobody\u2019s catch,\u201D
+    this aquatic diva takes no bait, dodges nets with flair, and still finds time
+    to lecture the ocean on self-care. Martilapia built its own coral castle from
+    scratch (thank you very much) and hosts nightly stand-up routines for starfish
+    and seahorses alike"
+  price: 40

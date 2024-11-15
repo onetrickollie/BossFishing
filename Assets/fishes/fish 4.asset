@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f43444a5cc5f84bb58f8f7c406b83928, type: 3}
   m_Name: fish 4
   m_EditorClassIdentifier: 
-  fishName: chuckfin ( Chub-E-Fin)
+  fishName: Chub-E-Fin(30g)
   fishSprite: {fileID: -1969396451, guid: 3598f4774fda74cc6bf767a67b220cc9, type: 3}
   fishDescription: This adorable little fish with soft blue-gray scales is as playful
     as they come! Known for its boundless energy, Chuckfin never seems to sit still,

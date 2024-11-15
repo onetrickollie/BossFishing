@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f43444a5cc5f84bb58f8f7c406b83928, type: 3}
   m_Name: fish 8
   m_EditorClassIdentifier: 
-  fishName: bernicuda
+  fishName: bernicuda(10g)
   fishSprite: {fileID: 21300000, guid: 941df6c96a73f4727b6c7e77039a6628, type: 3}
   fishDescription: "a light grey fish that\u2019s always just floating, taking it
     easy, and soaking in the peaceful waters around her. She\u2019s not the fastest
