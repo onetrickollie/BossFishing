@@ -3751,10 +3751,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Move Boss with WASD\nWalk to a fishable area (river) and click to begin
-    fishing!\nonce you see a bite, smash ur mouse button until the \nindicator covers
-    the fish entirely \nSell your fishes at the market to buy new rods!\nthanks for
-    playing!!!\nclick anywhere to begin fishing..."
+  m_text: "Move Boss with WASD, Press e for inventory\nWalk to a fishable area (river)
+    and click to begin fishing!\nonce you see a bite, smash ur mouse button until
+    the \nindicator covers the fish entirely \nSell your fishes at the market to
+    buy new rods!\nthanks for playing!!!\nclick anywhere to begin fishing..."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f3e739552901e47c98623a87e400cef4, type: 2}
   m_sharedMaterial: {fileID: -9188383723051765374, guid: f3e739552901e47c98623a87e400cef4, type: 2}
